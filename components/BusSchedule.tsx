@@ -1,4 +1,7 @@
+"use client"
+
 import type React from "react"
+import { useState, useEffect } from "react"
 import TimeEntry from "./TimeEntry"
 
 interface TimeInfo {
@@ -16,7 +19,15 @@ interface BusScheduleProps {
 }
 
 const BusSchedule: React.FC<BusScheduleProps> = ({ color, times }) => {
-  const currentTime = new Date()
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000) // Update every minute
+
+    return () => clearInterval(timer)
+  }, [])
 
   const getNextAvailableIndex = () => {
     for (let i = 0; i < times.length; i++) {
