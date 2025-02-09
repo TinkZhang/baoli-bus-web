@@ -31,7 +31,7 @@ const TimeEntry: React.FC<TimeEntryProps> = ({
   const returnDate = new Date(currentTime)
   returnDate.setHours(returnHours, returnMinutes, 0, 0)
 
-  const isPastTime = returnDate < currentTime && currentTime.getHours() < 19
+  const isPastTime = currentTime > returnDate
   const opacity = isPastTime ? "opacity-50" : ""
   const highlightClass = isNextAvailable ? "bg-yellow-100 border-2 border-yellow-300 rounded-lg" : ""
 

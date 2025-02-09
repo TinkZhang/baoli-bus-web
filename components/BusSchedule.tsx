@@ -29,16 +29,19 @@ const BusSchedule: React.FC<BusScheduleProps> = ({ color, times }) => {
     return () => clearInterval(timer)
   }, [])
 
+  const getUTC8Time = (date: Date) => {
+    const utc8Offset = 8 * 60 * 60 * 1000 // 8 hours in milliseconds
+    return new Date(date.getTime() + utc8Offset + date.getTimezoneOffset() * 60 * 1000)
+  }
+
   const getNextAvailableIndex = () => {
+    const utc8Now = getUTC8Time(currentTime)
     for (let i = 0; i < times.length; i++) {
       const [departureHours, departureMinutes] = times[i].departureTime.split(":").map(Number)
-      const [returnHours, returnMinutes] = times[i].returnTime.split(":").map(Number)
-      const departureDate = new Date(currentTime)
+      const departureDate = new Date(utc8Now)
       departureDate.setHours(departureHours, departureMinutes, 0, 0)
-      const returnDate = new Date(currentTime)
-      returnDate.setHours(returnHours, returnMinutes, 0, 0)
 
-      if (currentTime < returnDate) {
+      if (utc8Now <= departureDate) {
         return i
       }
     }
@@ -55,7 +58,7 @@ const BusSchedule: React.FC<BusScheduleProps> = ({ color, times }) => {
             key={index}
             {...timeInfo}
             color={color}
-            currentTime={currentTime}
+            currentTime={getUTC8Time(currentTime)}
             isNextAvailable={index === nextAvailableIndex}
           />
         ))}
